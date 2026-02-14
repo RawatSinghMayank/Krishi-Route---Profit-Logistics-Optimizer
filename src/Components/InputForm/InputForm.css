@@ -1,0 +1,315 @@
+/* InputForm.css */
+
+.input-form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 1rem 0;
+}
+
+.input-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #374151;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.required {
+  color: #ef4444;
+}
+
+/* Crop Selection */
+.crop-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.crop-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.crop-button:hover {
+  border-color: #66bb6a;
+  background: #f1f8f4;
+}
+
+.crop-button.active {
+  border-color: #2e7d32;
+  background: linear-gradient(135deg, #e8f5e9 0%, #f1f8f4 100%);
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+.crop-icon {
+  font-size: 2rem;
+}
+
+.crop-label {
+  text-align: center;
+  line-height: 1.3;
+}
+
+/* Quantity Input */
+.quantity-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.form-input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  background: white;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #2e7d32;
+  box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+}
+
+.form-input.error {
+  border-color: #ef4444;
+}
+
+.unit-select {
+  width: 140px;
+}
+
+.form-select {
+  padding: 0.75rem 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.form-select:focus {
+  outline: none;
+  border-color: #2e7d32;
+}
+
+/* Vehicle Selection */
+.vehicle-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.vehicle-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.vehicle-card:hover {
+  border-color: #66bb6a;
+  background: #f9fafb;
+}
+
+.vehicle-card.selected {
+  border-color: #2e7d32;
+  background: linear-gradient(135deg, #e8f5e9 0%, #f1f8f4 100%);
+}
+
+.vehicle-icon {
+  font-size: 2rem;
+}
+
+.vehicle-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.vehicle-name {
+  font-weight: 600;
+  color: #1f2937;
+  font-size: 0.95rem;
+}
+
+.vehicle-details {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.capacity::before {
+  content: '📦 ';
+}
+
+.rate::before {
+  content: '💰 ';
+}
+
+.vehicle-check {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #e5e7eb;
+  border-radius: 50%;
+  color: #2e7d32;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+.vehicle-card.selected .vehicle-check {
+  background: #2e7d32;
+  border-color: #2e7d32;
+  color: white;
+}
+
+/* Location Input */
+.location-input-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-detect-location {
+  padding: 0.75rem 1rem;
+  background: #2e7d32;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-detect-location:hover {
+  background: #1b5e20;
+  transform: scale(1.05);
+}
+
+.location-confirmed {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: #e8f5e9;
+  border-radius: 6px;
+  color: #2e7d32;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* Error Messages */
+.error-text {
+  color: #ef4444;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-top: 0.25rem;
+}
+
+/* Form Actions */
+.form-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.form-actions button {
+  flex: 1;
+}
+
+/* Trip Summary */
+.trip-summary {
+  background: linear-gradient(135deg, #e8f5e9 0%, #f1f8f4 100%);
+  border-radius: 12px;
+  padding: 1.25rem;
+  border: 2px solid #c8e6c9;
+}
+
+.summary-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 1rem 0;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #c8e6c9;
+  font-size: 0.9rem;
+}
+
+.summary-item:last-child {
+  border-bottom: none;
+}
+
+.summary-label {
+  color: #6b7280;
+}
+
+.summary-value {
+  font-weight: 600;
+  color: #2e7d32;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .crop-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .quantity-group {
+    flex-direction: column;
+  }
+  
+  .unit-select {
+    width: 100%;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+}

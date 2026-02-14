@@ -1,0 +1,375 @@
+/* CostBreakdown.css */
+
+.cost-breakdown-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Controls */
+.breakdown-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.chart-type-selector {
+  display: flex;
+  gap: 0.5rem;
+  background: #f3f4f6;
+  padding: 0.25rem;
+  border-radius: 10px;
+}
+
+.chart-type-btn {
+  padding: 0.5rem 1.25rem;
+  border: none;
+  background: transparent;
+  color: #6b7280;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.chart-type-btn:hover {
+  color: #1f2937;
+}
+
+.chart-type-btn.active {
+  background: white;
+  color: #2e7d32;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.mandi-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.mandi-selector label {
+  font-size: 0.9rem;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.mandi-selector select {
+  padding: 0.5rem 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  background: white;
+  cursor: pointer;
+  min-width: 200px;
+}
+
+.mandi-selector select:focus {
+  outline: none;
+  border-color: #2e7d32;
+}
+
+/* Chart Wrapper */
+.chart-wrapper {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.chart-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 1.5rem 0;
+  text-align: center;
+}
+
+/* Custom Tooltip */
+.custom-tooltip {
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  min-width: 200px;
+}
+
+.tooltip-title {
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 0.75rem 0;
+  font-size: 0.95rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.tooltip-divider {
+  height: 1px;
+  background: #e5e7eb;
+  margin: 0.5rem 0;
+}
+
+.tooltip-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0.5rem 0;
+  font-size: 0.85rem;
+}
+
+.tooltip-label {
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.tooltip-value {
+  font-weight: 700;
+  margin-left: 1rem;
+}
+
+.tooltip-item.revenue .tooltip-value {
+  color: #3b82f6;
+}
+
+.tooltip-item.cost .tooltip-value {
+  color: #6b7280;
+}
+
+.tooltip-item.total .tooltip-value {
+  color: #1f2937;
+  font-size: 0.95rem;
+}
+
+.tooltip-item.profit .tooltip-value {
+  color: #10b981;
+  font-size: 1rem;
+}
+
+.tooltip-percentage {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  margin-left: 0.25rem;
+}
+
+/* Pie Chart */
+.pie-wrapper {
+  padding: 2rem;
+}
+
+.pie-chart-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.pie-label {
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.pie-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.stat-card {
+  background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+  border-radius: 12px;
+  padding: 1.25rem;
+  text-align: center;
+  border: 2px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.stat-card.highlight {
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border-color: #2e7d32;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.stat-value.revenue-color {
+  color: #3b82f6;
+}
+
+.stat-value.cost-color {
+  color: #ef4444;
+}
+
+.stat-value.profit-color {
+  color: #10b981;
+}
+
+/* Efficiency Analysis */
+.efficiency-analysis {
+  background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 2px solid #e5e7eb;
+}
+
+.analysis-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 1.25rem 0;
+}
+
+.efficiency-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.efficiency-card {
+  background: white;
+  border-radius: 10px;
+  padding: 1rem;
+  border: 2px solid #e5e7eb;
+  transition: all 0.2s ease;
+}
+
+.efficiency-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.efficiency-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.efficiency-rank {
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(135deg, #2e7d32 0%, #66bb6a 100%);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.efficiency-name {
+  font-weight: 600;
+  color: #1f2937;
+  font-size: 0.9rem;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.efficiency-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.efficiency-metric {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+}
+
+.efficiency-metric .metric-label {
+  color: #6b7280;
+}
+
+.efficiency-metric .metric-value {
+  font-weight: 700;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+}
+
+.efficiency-metric .metric-value.good {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.efficiency-metric .metric-value.medium {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.efficiency-metric .metric-value.high {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* No Data */
+.no-data {
+  text-align: center;
+  padding: 3rem;
+  color: #6b7280;
+  font-size: 1.1rem;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .efficiency-cards {
+    grid-template-columns: 1fr;
+  }
+  
+  .pie-stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .breakdown-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .chart-type-selector {
+    justify-content: center;
+  }
+  
+  .mandi-selector {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .mandi-selector select {
+    width: 100%;
+    min-width: auto;
+  }
+  
+  .chart-wrapper {
+    padding: 1rem;
+  }
+  
+  .pie-wrapper {
+    padding: 1rem;
+  }
+}
