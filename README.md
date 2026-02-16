@@ -23,34 +23,6 @@ Professional React dashboard for the Krishi-Route Profit & Logistics Optimizer. 
 - 📈 Smart insights (price alerts, perishability warnings, historical trends)
 - 📱 Fully responsive design
 
-## Project Structure
-
-```
-krishi-route-dashboard/
-├── public/
-│   └── index.html
-├── src/
-│   ├── components/
-│   │   ├── InputForm.jsx
-│   │   ├── InputForm.css
-│   │   ├── ProfitCards.jsx
-│   │   ├── ProfitCards.css
-│   │   ├── RouteMap.jsx
-│   │   ├── RouteMap.css
-│   │   ├── CostBreakdown.jsx
-│   │   ├── CostBreakdown.css
-│   │   ├── ImpactMetrics.jsx
-│   │   └── ImpactMetrics.css
-│   ├── pages/
-│   │   ├── Dashboard.jsx
-│   │   └── Dashboard.css
-│   ├── App.js
-│   ├── App.css
-│   ├── index.js
-│   └── index.css
-└── package.json
-```
-
 ## Installation & Setup
 
 ### Prerequisites
@@ -197,7 +169,7 @@ const handleTripSubmit = async (formData) => {
 Edit `src/components/InputForm.jsx`:
 ```javascript
 const CROPS = [
-  { value: 'mango', label: 'Mango (आम)', icon: '🥭' },
+  { value: 'mango', label: 'Mango (आम)' },
   // Add more crops here
 ];
 ```
@@ -211,7 +183,6 @@ const VEHICLES = [
     label: 'Large Truck', 
     capacity: '10 tons',
     ratePerKm: 30,
-    icon: '🚚'
   },
   // Add more vehicles here
 ];
