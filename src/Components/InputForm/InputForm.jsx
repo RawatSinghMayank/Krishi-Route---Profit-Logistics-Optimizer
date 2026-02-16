@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import mockData from '../../data/mockData.json';
 import './InputForm.css';
 
@@ -92,9 +92,9 @@ const InputForm = ({ onSubmit, loading, onReset, hasResults }) => {
           {selectedCrop && (
             <div className="field-info">
               {selectedCrop.perishable ? (
-                <span className="info-badge warning">⚠️ Perishable - {selectedCrop.shelfLife} days shelf life</span>
+                <span className="info-badge warning"> Perishable - {selectedCrop.shelfLife} days shelf life</span>
               ) : (
-                <span className="info-badge success">✓ Non-perishable - {selectedCrop.shelfLife} days shelf life</span>
+                <span className="info-badge success">Non-perishable - {selectedCrop.shelfLife} days shelf life</span>
               )}
             </div>
           )}
@@ -199,7 +199,6 @@ const InputForm = ({ onSubmit, loading, onReset, hasResults }) => {
               </>
             ) : (
               <>
-                <span>🔍</span>
                 Find Best Market
               </>
             )}

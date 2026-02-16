@@ -1,4 +1,3 @@
-import React from 'react';
 import './ImpactMetrics.css';
 
 const ImpactMetrics = ({ results, tripData }) => {
@@ -49,7 +48,6 @@ const ImpactMetrics = ({ results, tripData }) => {
     <div className="impact-metrics-container">
       {/* Hero Banner */}
       <div className="impact-hero" style={{ borderLeftColor: impact.color }}>
-        <div className="hero-icon">🎯</div>
         <div className="hero-content">
           <h2 className="hero-title">
             {potentialSavings > 0 
@@ -73,7 +71,6 @@ const ImpactMetrics = ({ results, tripData }) => {
       <div className="metrics-grid">
         {/* Markets Compared */}
         <div className="metric-card primary">
-          <div className="metric-icon">🏪</div>
           <div className="metric-content">
             <div className="metric-value">{totalMarketsCompared}</div>
             <div className="metric-label">Markets Compared</div>
@@ -85,7 +82,6 @@ const ImpactMetrics = ({ results, tripData }) => {
 
         {/* Best Profit */}
         <div className="metric-card success">
-          <div className="metric-icon">💰</div>
           <div className="metric-content">
             <div className="metric-value">{formatCurrency(bestMandi.netProfit)}</div>
             <div className="metric-label">Best Profit</div>
@@ -98,7 +94,6 @@ const ImpactMetrics = ({ results, tripData }) => {
         {/* Potential Savings */}
         {potentialSavings > 0 && (
           <div className="metric-card warning">
-            <div className="metric-icon">📈</div>
             <div className="metric-content">
               <div className="metric-value">{formatCurrency(potentialSavings)}</div>
               <div className="metric-label">Potential Gain</div>
@@ -112,7 +107,6 @@ const ImpactMetrics = ({ results, tripData }) => {
         {/* ROI per km */}
         {roi > 0 && (
           <div className="metric-card info">
-            <div className="metric-icon">🚛</div>
             <div className="metric-content">
               <div className="metric-value">₹{roi}/km</div>
               <div className="metric-label">Return per Extra KM</div>
@@ -125,7 +119,6 @@ const ImpactMetrics = ({ results, tripData }) => {
 
         {/* Price Range */}
         <div className="metric-card neutral">
-          <div className="metric-icon">📊</div>
           <div className="metric-content">
             <div className="metric-value">
               {formatCurrency(maxProfitDifference)}
@@ -140,12 +133,11 @@ const ImpactMetrics = ({ results, tripData }) => {
 
       {/* Insights Panel */}
       <div className="insights-panel">
-        <h3 className="insights-title">💡 Key Insights</h3>
+        <h3 className="insights-title">Key Insights</h3>
         <div className="insights-list">
           {/* Nearest vs Best comparison */}
           {nearestMandi.id !== bestMandi.id && (
             <div className="insight-item highlight">
-              <span className="insight-icon">⚠️</span>
               <div className="insight-content">
                 <strong>Don't settle for nearest!</strong>
                 <p>
@@ -160,7 +152,6 @@ const ImpactMetrics = ({ results, tripData }) => {
 
           {/* Distance efficiency */}
           <div className="insight-item">
-            <span className="insight-icon">🎯</span>
             <div className="insight-content">
               <strong>Optimal distance-to-profit ratio</strong>
               <p>
@@ -172,7 +163,6 @@ const ImpactMetrics = ({ results, tripData }) => {
 
           {/* Cost analysis */}
           <div className="insight-item">
-            <span className="insight-icon">💸</span>
             <div className="insight-content">
               <strong>Transport costs managed</strong>
               <p>
@@ -186,7 +176,6 @@ const ImpactMetrics = ({ results, tripData }) => {
           {/* Market price insights */}
           {bestMandi.marketPrice > worstMandi.marketPrice && (
             <div className="insight-item">
-              <span className="insight-icon">📈</span>
               <div className="insight-content">
                 <strong>Price advantage identified</strong>
                 <p>
@@ -202,7 +191,7 @@ const ImpactMetrics = ({ results, tripData }) => {
           {bestMandi.priceAlert && (
             <div className={`insight-item ${bestMandi.priceAlert.trend === 'falling' ? 'warning-item' : ''}`}>
               <span className="insight-icon">
-                {bestMandi.priceAlert.trend === 'rising' ? '📈' : '📉'}
+                {bestMandi.priceAlert.trend === 'rising' ? 'UP' : 'DOWN'}
               </span>
               <div className="insight-content">
                 <strong>Price trend alert</strong>
@@ -221,7 +210,6 @@ const ImpactMetrics = ({ results, tripData }) => {
           {/* Perishability warning */}
           {bestMandi.perishabilityWarning && (
             <div className="insight-item warning-item">
-              <span className="insight-icon">⏱️</span>
               <div className="insight-content">
                 <strong>Perishability notice</strong>
                 <p>{bestMandi.perishabilityWarning.message}</p>
@@ -232,7 +220,6 @@ const ImpactMetrics = ({ results, tripData }) => {
           {/* Historical insight */}
           {bestMandi.historicalInsight && (
             <div className="insight-item">
-              <span className="insight-icon">📅</span>
               <div className="insight-content">
                 <strong>Historical pattern</strong>
                 <p>{bestMandi.historicalInsight}</p>
@@ -244,7 +231,6 @@ const ImpactMetrics = ({ results, tripData }) => {
 
       {/* Quick Action Suggestion */}
       <div className="action-suggestion">
-        <div className="suggestion-icon">🚀</div>
         <div className="suggestion-content">
           <h4>Recommended Action</h4>
           <p>

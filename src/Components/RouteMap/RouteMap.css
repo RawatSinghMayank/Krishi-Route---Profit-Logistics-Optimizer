@@ -96,6 +96,7 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   position: relative;
   z-index: 1;
+  background: #e5e7eb;
 }
 
 /* Custom Markers */
@@ -139,30 +140,6 @@
 
 .marker-pin.best .marker-icon {
   font-size: 1.5rem;
-}
-
-/* Distance Labels */
-.distance-label {
-  background: transparent;
-  border: none;
-}
-
-.label-content {
-  background: white;
-  padding: 0.25rem 0.75rem;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #1f2937;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  border: 2px solid #e5e7eb;
-  white-space: nowrap;
-}
-
-.label-content.best-label {
-  background: #dcfce7;
-  border-color: #2e7d32;
-  color: #2e7d32;
 }
 
 /* Map Popups */
@@ -248,6 +225,20 @@
   color: #2e7d32;
 }
 
+/* Error State */
+.map-error {
+  padding: 3rem 2rem;
+  text-align: center;
+  background: #fef2f2;
+  border: 2px solid #fecaca;
+  border-radius: 12px;
+  color: #991b1b;
+}
+
+.map-error p {
+  margin: 0.5rem 0;
+}
+
 /* Leaflet Popup Customization */
 .leaflet-popup-content-wrapper {
   border-radius: 12px;
@@ -268,25 +259,25 @@
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .map-legend {
     justify-content: center;
   }
-  
+
   .market-selector {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .selector-dropdown {
     width: 100%;
     min-width: auto;
   }
-  
+
   .map-element {
     height: 400px;
   }
-  
+
   .map-info-panel {
     grid-template-columns: 1fr;
   }
@@ -296,15 +287,15 @@
   .map-element {
     height: 350px;
   }
-  
+
   .legend-item {
     font-size: 0.8rem;
   }
-  
+
   .info-item {
     padding: 0.75rem;
   }
-  
+
   .info-icon {
     font-size: 1.5rem;
   }

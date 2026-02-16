@@ -237,8 +237,7 @@
       "nameHindi": "प्याज",
       "type": "onion",
       "perishable": true,
-      "shelfLife": 30,
-      "icon": "🧅"
+      "shelfLife": 30
     },
     {
       "id": "crop_002",
@@ -246,8 +245,7 @@
       "nameHindi": "गेहूं",
       "type": "wheat",
       "perishable": false,
-      "shelfLife": 180,
-      "icon": "🌾"
+      "shelfLife": 180
     },
     {
       "id": "crop_003",
@@ -255,8 +253,7 @@
       "nameHindi": "टमाटर",
       "type": "tomato",
       "perishable": true,
-      "shelfLife": 7,
-      "icon": "🍅"
+      "shelfLife": 7
     },
     {
       "id": "crop_004",
@@ -264,8 +261,7 @@
       "nameHindi": "आलू",
       "type": "potato",
       "perishable": false,
-      "shelfLife": 60,
-      "icon": "🥔"
+      "shelfLife": 60
     },
     {
       "id": "crop_005",
@@ -273,8 +269,7 @@
       "nameHindi": "चावल",
       "type": "rice",
       "perishable": false,
-      "shelfLife": 365,
-      "icon": "🌾"
+      "shelfLife": 365
     },
     {
       "id": "crop_006",
@@ -282,8 +277,8 @@
       "nameHindi": "पत्तागोभी",
       "type": "cabbage",
       "perishable": true,
-      "shelfLife": 14,
-      "icon": "🥬"
+      "shelfLife": 14
+      
     }
   ],
   "distances": {

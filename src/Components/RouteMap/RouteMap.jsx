@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import './RouteMap.css';
@@ -14,26 +14,22 @@ L.Icon.Default.mergeOptions({
 const RouteMap = ({ origin, mandis, bestMandi }) => {
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
+  const markersRef = useRef([]);
+  const polylinesRef = useRef([]);
   const [selectedMandi, setSelectedMandi] = useState(bestMandi?.id || null);
 
+  // Validate coordinates
+  const isValidCoordinate = (coord) => {
+    return coord && 
+           typeof coord.lat === 'number' && 
+           typeof coord.lng === 'number' &&
+           !isNaN(coord.lat) && 
+           !isNaN(coord.lng);
+  };
+
   useEffect(() => {
-    // Initialize map
-    if (!mapInstanceRef.current && mapRef.current) {
-      mapInstanceRef.current = L.map(mapRef.current, {
-        center: [origin.lat, origin.lng],
-        zoom: 9,
-        zoomControl: true,
-      });
-
-      // Add tile layer
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors',
-        maxZoom: 18,
-      }).addTo(mapInstanceRef.current);
-    }
-
+    // Cleanup function to remove map when component unmounts
     return () => {
-      // Cleanup map on unmount
       if (mapInstanceRef.current) {
         mapInstanceRef.current.remove();
         mapInstanceRef.current = null;
@@ -42,18 +38,54 @@ const RouteMap = ({ origin, mandis, bestMandi }) => {
   }, []);
 
   useEffect(() => {
-    if (!mapInstanceRef.current || !mandis || mandis.length === 0) return;
+    // Validate origin coordinates
+    if (!origin || !origin.coordinates) {
+      console.error('Origin coordinates missing:', origin);
+      return;
+    }
+
+    const originCoords = origin.coordinates;
+    if (!isValidCoordinate(originCoords)) {
+      console.error('Invalid origin coordinates:', originCoords);
+      return;
+    }
+
+    // Validate mandis
+    if (!mandis || mandis.length === 0) {
+      console.warn('No mandis provided to map');
+      return;
+    }
+
+    // Initialize map only once
+    if (!mapInstanceRef.current && mapRef.current) {
+      try {
+        mapInstanceRef.current = L.map(mapRef.current, {
+          center: [originCoords.lat, originCoords.lng],
+          zoom: 8,
+          zoomControl: true,
+        });
+
+        // Add tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap contributors',
+          maxZoom: 18,
+        }).addTo(mapInstanceRef.current);
+      } catch (error) {
+        console.error('Error initializing map:', error);
+        return;
+      }
+    }
 
     const map = mapInstanceRef.current;
-    
-    // Clear existing layers
-    map.eachLayer((layer) => {
-      if (layer instanceof L.Marker || layer instanceof L.Polyline) {
-        map.removeLayer(layer);
-      }
-    });
+    if (!map) return;
 
-    // Custom icons
+    // Clear existing markers and polylines
+    markersRef.current.forEach(marker => marker.remove());
+    polylinesRef.current.forEach(polyline => polyline.remove());
+    markersRef.current = [];
+    polylinesRef.current = [];
+
+    // Create custom icons
     const originIcon = L.divIcon({
       className: 'custom-marker origin-marker',
       html: '<div class="marker-pin origin"><span class="marker-icon">🏠</span></div>',
@@ -79,25 +111,36 @@ const RouteMap = ({ origin, mandis, bestMandi }) => {
     });
 
     // Add origin marker
-    const originMarker = L.marker([origin.lat, origin.lng], { icon: originIcon })
-      .addTo(map)
-      .bindPopup(`
-        <div class="map-popup">
-          <strong>Your Location</strong><br/>
-          ${origin.name || 'Current Position'}
-        </div>
-      `);
+    const originMarker = L.marker([originCoords.lat, originCoords.lng], { 
+      icon: originIcon 
+    }).addTo(map);
+
+    originMarker.bindPopup(`
+      <div class="map-popup">
+        <strong>Your Location</strong><br/>
+        ${origin.name || 'Current Position'}
+      </div>
+    `);
+
+    markersRef.current.push(originMarker);
+
+    // Create bounds to fit all markers
+    const bounds = L.latLngBounds([[originCoords.lat, originCoords.lng]]);
 
     // Add mandi markers and routes
-    const bounds = L.latLngBounds([[origin.lat, origin.lng]]);
-    
-    mandis.forEach((mandi, index) => {
+    mandis.forEach((mandi) => {
+      // Validate mandi coordinates
+      if (!mandi.coordinates || !isValidCoordinate(mandi.coordinates)) {
+        console.warn('Invalid coordinates for mandi:', mandi.name, mandi.coordinates);
+        return;
+      }
+
       const isBest = mandi.id === bestMandi?.id;
       const isSelected = mandi.id === selectedMandi;
-      
+
       // Add marker
       const marker = L.marker(
-        [mandi.location.lat, mandi.location.lng],
+        [mandi.coordinates.lat, mandi.coordinates.lng],
         { icon: isBest ? bestMandiIcon : mandiIcon }
       ).addTo(map);
 
@@ -106,18 +149,22 @@ const RouteMap = ({ origin, mandis, bestMandi }) => {
         <div class="map-popup ${isBest ? 'best-popup' : ''}">
           ${isBest ? '<div class="popup-badge">⭐ Best Choice</div>' : ''}
           <strong>${mandi.name}</strong><br/>
-          <span class="popup-detail">📍 ${mandi.distance.toFixed(1)} km away</span><br/>
-          <span class="popup-detail">💰 ₹${mandi.netProfit.toLocaleString('en-IN')} profit</span><br/>
-          <span class="popup-detail">📊 ₹${mandi.marketPrice}/quintal</span>
+          <span class="popup-detail"> ${mandi.distance.toFixed(1)} km away</span><br/>
+          <span class="popup-detail">₹${mandi.netProfit.toLocaleString('en-IN')} profit</span><br/>
+          <span class="popup-detail"> ₹${mandi.marketPrice}/quintal</span>
           ${mandi.historicalInsight ? `<br/><span class="popup-insight">💡 ${mandi.historicalInsight}</span>` : ''}
         </div>
       `;
-      
+
       marker.bindPopup(popupContent);
+      markersRef.current.push(marker);
 
       // Add route line
       const routeLine = L.polyline(
-        [[origin.lat, origin.lng], [mandi.location.lat, mandi.location.lng]],
+        [
+          [originCoords.lat, originCoords.lng],
+          [mandi.coordinates.lat, mandi.coordinates.lng]
+        ],
         {
           color: isBest ? '#10b981' : isSelected ? '#3b82f6' : '#94a3b8',
           weight: isBest ? 4 : isSelected ? 3 : 2,
@@ -126,23 +173,10 @@ const RouteMap = ({ origin, mandis, bestMandi }) => {
         }
       ).addTo(map);
 
-      // Add distance label on route
-      const midPoint = [
-        (origin.lat + mandi.location.lat) / 2,
-        (origin.lng + mandi.location.lng) / 2,
-      ];
-      
-      const distanceLabel = L.divIcon({
-        className: 'distance-label',
-        html: `<div class="label-content ${isBest ? 'best-label' : ''}">${mandi.distance.toFixed(0)} km</div>`,
-        iconSize: [60, 20],
-        iconAnchor: [30, 10],
-      });
-      
-      L.marker(midPoint, { icon: distanceLabel }).addTo(map);
+      polylinesRef.current.push(routeLine);
 
       // Add to bounds
-      bounds.extend([mandi.location.lat, mandi.location.lng]);
+      bounds.extend([mandi.coordinates.lat, mandi.coordinates.lng]);
 
       // Click handler for marker
       marker.on('click', () => {
@@ -157,22 +191,36 @@ const RouteMap = ({ origin, mandis, bestMandi }) => {
 
   const handleMandiSelect = (mandiId) => {
     setSelectedMandi(mandiId);
-    
+
     // Find and open popup for selected mandi
-    if (mapInstanceRef.current) {
-      mapInstanceRef.current.eachLayer((layer) => {
-        if (layer instanceof L.Marker && layer.getLatLng()) {
-          const mandi = mandis.find(m => 
-            m.location.lat === layer.getLatLng().lat && 
-            m.location.lng === layer.getLatLng().lng
-          );
-          if (mandi && mandi.id === mandiId) {
-            layer.openPopup();
-          }
-        }
-      });
+    const mandi = mandis.find(m => m.id === mandiId);
+    if (mandi && mapInstanceRef.current) {
+      mapInstanceRef.current.setView(
+        [mandi.coordinates.lat, mandi.coordinates.lng],
+        11
+      );
     }
   };
+
+  // Validate props before rendering
+  if (!origin || !origin.coordinates || !isValidCoordinate(origin.coordinates)) {
+    return (
+      <div className="map-error">
+        <p> Unable to display map: Invalid origin coordinates</p>
+        <p style={{ fontSize: '0.85rem', color: '#6b7280' }}>
+          Origin data: {JSON.stringify(origin)}
+        </p>
+      </div>
+    );
+  }
+
+  if (!mandis || mandis.length === 0) {
+    return (
+      <div className="map-error">
+        <p> No markets available to display on map</p>
+      </div>
+    );
+  }
 
   return (
     <div className="route-map-container">
@@ -194,20 +242,22 @@ const RouteMap = ({ origin, mandis, bestMandi }) => {
         </div>
 
         {/* Quick Market Selector */}
-        <div className="market-selector">
-          <label className="selector-label">Quick Jump:</label>
-          <select 
-            className="selector-dropdown"
-            value={selectedMandi || ''}
-            onChange={(e) => handleMandiSelect(e.target.value)}
-          >
-            {mandis.map((mandi, index) => (
-              <option key={mandi.id || index} value={mandi.id}>
-                {mandi.name} ({mandi.distance.toFixed(0)} km - ₹{mandi.netProfit.toLocaleString('en-IN')})
-              </option>
-            ))}
-          </select>
-        </div>
+        {mandis.length > 0 && (
+          <div className="market-selector">
+            <label className="selector-label">Quick Jump:</label>
+            <select
+              className="selector-dropdown"
+              value={selectedMandi || ''}
+              onChange={(e) => handleMandiSelect(e.target.value)}
+            >
+              {mandis.map((mandi, index) => (
+                <option key={mandi.id || index} value={mandi.id}>
+                  {mandi.name} ({mandi.distance.toFixed(0)} km - ₹{mandi.netProfit.toLocaleString('en-IN')})
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
       </div>
 
       {/* Map Container */}
@@ -216,7 +266,6 @@ const RouteMap = ({ origin, mandis, bestMandi }) => {
       {/* Map Info Panel */}
       <div className="map-info-panel">
         <div className="info-item">
-          <span className="info-icon">🗺️</span>
           <div className="info-content">
             <span className="info-label">Total Distance</span>
             <span className="info-value">
@@ -224,19 +273,17 @@ const RouteMap = ({ origin, mandis, bestMandi }) => {
             </span>
           </div>
         </div>
-        
+
         <div className="info-item">
-          <span className="info-icon">🎯</span>
           <div className="info-content">
             <span className="info-label">Best Route</span>
             <span className="info-value">
-              {bestMandi?.name} ({bestMandi?.distance.toFixed(0)} km)
+              {bestMandi?.name} ({bestMandi?.distance?.toFixed(0)} km)
             </span>
           </div>
         </div>
 
         <div className="info-item">
-          <span className="info-icon">⏱️</span>
           <div className="info-content">
             <span className="info-label">Est. Travel Time</span>
             <span className="info-value">

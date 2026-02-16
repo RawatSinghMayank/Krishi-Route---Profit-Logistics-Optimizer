@@ -1,4 +1,3 @@
-import React from 'react';
 import './ProfitCards.css';
 
 const ProfitCards = ({ results, selectedCrop }) => {
@@ -6,7 +5,7 @@ const ProfitCards = ({ results, selectedCrop }) => {
     return <div className="no-results">No markets found</div>;
   }
 
-  // Sort by net profit (already sorted from backend, but ensuring)
+  // Sort by net profit 
   const sortedResults = [...results].sort((a, b) => b.netProfit - a.netProfit);
   const bestProfit = sortedResults[0].netProfit;
 
@@ -22,13 +21,13 @@ const ProfitCards = ({ results, selectedCrop }) => {
     const percentage = ((profit / maxProfit) * 100).toFixed(0);
     
     if (profit === maxProfit) {
-      return { text: 'Best Choice', className: 'badge-best', icon: '⭐' };
+      return { text: 'Best Choice', className: 'badge-best' };
     } else if (percentage >= 90) {
-      return { text: 'Good Option', className: 'badge-good', icon: '👍' };
+      return { text: 'Good Option', className: 'badge-good' };
     } else if (percentage >= 75) {
-      return { text: 'Fair Option', className: 'badge-fair', icon: '👌' };
+      return { text: 'Fair Option', className: 'badge-fair' };
     } else {
-      return { text: 'Lower Profit', className: 'badge-low', icon: '⚠️' };
+      return { text: 'Lower Profit', className: 'badge-low' };
     }
   };
 
@@ -36,12 +35,12 @@ const ProfitCards = ({ results, selectedCrop }) => {
     if (mandi.priceAlert) {
       if (mandi.priceAlert.trend === 'rising') {
         return {
-          text: `📈 Price rising (${mandi.priceAlert.change}% in 3 days)`,
+          text: ` Price rising (${mandi.priceAlert.change}% in 3 days)`,
           className: 'alert-rising'
         };
       } else if (mandi.priceAlert.trend === 'falling') {
         return {
-          text: `📉 Price falling (${mandi.priceAlert.change}% in 3 days)`,
+          text: ` Price falling (${mandi.priceAlert.change}% in 3 days)`,
           className: 'alert-falling'
         };
       }
@@ -52,7 +51,7 @@ const ProfitCards = ({ results, selectedCrop }) => {
   const getPerishabilityWarning = (mandi) => {
     if (mandi.perishabilityWarning) {
       return {
-        text: `⏱️ ${mandi.perishabilityWarning.message}`,
+        text: ` ${mandi.perishabilityWarning.message}`,
         className: 'warning-perishable'
       };
     }
@@ -114,7 +113,6 @@ const ProfitCards = ({ results, selectedCrop }) => {
             {/* Key Metrics */}
             <div className="card-metrics">
               <div className="metric">
-                <span className="metric-icon">📍</span>
                 <div className="metric-content">
                   <span className="metric-label">Distance</span>
                   <span className="metric-value">{mandi.distance.toFixed(1)} km</span>
@@ -122,7 +120,6 @@ const ProfitCards = ({ results, selectedCrop }) => {
               </div>
 
               <div className="metric">
-                <span className="metric-icon">💰</span>
                 <div className="metric-content">
                   <span className="metric-label">Market Price</span>
                   <span className="metric-value">
@@ -132,7 +129,6 @@ const ProfitCards = ({ results, selectedCrop }) => {
               </div>
 
               <div className="metric">
-                <span className="metric-icon">🚛</span>
                 <div className="metric-content">
                   <span className="metric-label">Transport Cost</span>
                   <span className="metric-value">
@@ -182,7 +178,6 @@ const ProfitCards = ({ results, selectedCrop }) => {
             {/* Additional Info */}
             {mandi.historicalInsight && (
               <div className="historical-insight">
-                <span className="insight-icon">💡</span>
                 <span className="insight-text">{mandi.historicalInsight}</span>
               </div>
             )}
@@ -202,7 +197,6 @@ const ProfitCards = ({ results, selectedCrop }) => {
       {/* Summary Insights */}
       <div className="cards-summary">
         <div className="summary-stat">
-          <span className="stat-icon">🎯</span>
           <div className="stat-content">
             <span className="stat-value">{sortedResults.length}</span>
             <span className="stat-label">Markets Compared</span>
@@ -210,7 +204,6 @@ const ProfitCards = ({ results, selectedCrop }) => {
         </div>
         
         <div className="summary-stat">
-          <span className="stat-icon">💵</span>
           <div className="stat-content">
             <span className="stat-value">
               {formatCurrency(sortedResults[0].netProfit - sortedResults[sortedResults.length - 1].netProfit)}
@@ -220,7 +213,6 @@ const ProfitCards = ({ results, selectedCrop }) => {
         </div>
 
         <div className="summary-stat">
-          <span className="stat-icon">📏</span>
           <div className="stat-content">
             <span className="stat-value">
               {sortedResults[0].distance.toFixed(0)} km

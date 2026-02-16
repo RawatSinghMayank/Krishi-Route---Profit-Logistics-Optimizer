@@ -148,13 +148,13 @@ const CostBreakdown = ({ mandis }) => {
             className={`chart-type-btn ${chartType === 'stacked' ? 'active' : ''}`}
             onClick={() => setChartType('stacked')}
           >
-            📊 Comparison View
+             Comparison View
           </button>
           <button
             className={`chart-type-btn ${chartType === 'pie' ? 'active' : ''}`}
             onClick={() => setChartType('pie')}
           >
-            🥧 Distribution View
+             Distribution View
           </button>
         </div>
 
@@ -266,7 +266,7 @@ const CostBreakdown = ({ mandis }) => {
 
       {/* Cost Efficiency Analysis */}
       <div className="efficiency-analysis">
-        <h4 className="analysis-title">📈 Cost Efficiency Insights</h4>
+        <h4 className="analysis-title"> Cost Efficiency Insights</h4>
         <div className="efficiency-cards">
           {mandis.slice(0, 3).map((mandi, index) => {
             const totalCosts = mandi.costs.transport + mandi.costs.handling + (mandi.costs.other || 0);

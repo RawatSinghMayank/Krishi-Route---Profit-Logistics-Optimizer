@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useState} from 'react';
 import InputForm from '../InputForm/InputForm';
 import ProfitCards from '../ProfitCards/ProfitCards';
 import CostBreakdown from '../CostBreakdown/CostBreakdown';
 import ImpactMetrics from '../ImpactMetrics/ImpactMetrics';
+import RouteMap from '../RouteMap/RouteMap';
 import { calculateProfitability } from '../../services/profitCalculator';
 import './Dashboard.css';
 
@@ -44,7 +45,7 @@ const Dashboard = () => {
       {/* Header */}
       <header className="dashboard-header">
         <div className="header-content">
-          <h1>🌾 Krishi-Route</h1>
+          <h1>Krishi-Route</h1>
           <p className="tagline">Smart Market Selection for Maximum Profit</p>
         </div>
       </header>
@@ -72,7 +73,7 @@ const Dashboard = () => {
 
           {error && (
             <div className="error-state">
-              <div className="error-icon">⚠️</div>
+              <div className="error-icon">Error</div>
               <h3>Something went wrong</h3>
               <p>{error}</p>
               <button onClick={handleReset} className="btn-secondary">
@@ -83,24 +84,19 @@ const Dashboard = () => {
 
           {!loading && !error && !profitResults && (
             <div className="empty-state">
-              <div className="empty-icon">📊</div>
               <h3>Ready to Find Your Best Market</h3>
               <p>Select your crop, quantity, vehicle, and location to compare mandi prices and maximize your profit</p>
               <div className="feature-list">
                 <div className="feature-item">
-                  <span className="feature-icon">💰</span>
                   <span>Real-time price comparison</span>
                 </div>
                 <div className="feature-item">
-                  <span className="feature-icon">🚛</span>
                   <span>Transport cost calculation</span>
                 </div>
                 <div className="feature-item">
-                  <span className="feature-icon">📈</span>
                   <span>Profit optimization</span>
                 </div>
                 <div className="feature-item">
-                  <span className="feature-icon">📍</span>
                   <span>Distance-based analysis</span>
                 </div>
               </div>
@@ -114,6 +110,16 @@ const Dashboard = () => {
                 results={profitResults}
                 tripData={tripData}
               />
+              <section className="section map-section">
+                <h2 className="section-title">Route Visualization</h2>
+                <div className="map-wrapper">
+                  <RouteMap 
+                    origin={profitResults.locationDetails}
+                    mandis={profitResults.mandis}
+                    bestMandi={profitResults.bestMandi}
+                  />
+                </div>
+              </section>
 
               {/* Profit Comparison Cards */}
               <section className="section">
