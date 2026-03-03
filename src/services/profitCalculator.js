@@ -16,7 +16,8 @@ const calculateDistance = (lat1, lon1, lat2, lon2) => {
 };
 
 export const calculateProfitability = (tripData, liveData = null) => {
-  const { crop, quantity, unit, vehicle, location } = tripData;
+  // Added dieselRate extraction
+  const { crop, quantity, unit, vehicle, location, dieselRate } = tripData;
 
   const selectedVehicle = mockData.vehicles.find(v => v.type === vehicle);
   if (!selectedVehicle) throw new Error('Invalid vehicle selected');
@@ -28,7 +29,13 @@ export const calculateProfitability = (tripData, liveData = null) => {
   if (unit === 'ton') quantityInQuintals = quantityInQuintals * 10;
   else if (unit === 'kg') quantityInQuintals = quantityInQuintals / 100;
 
-  // Assuming you are in Jodhpur (since we know you tested from Rajasthan)
+  // Fuel Integration Logic:
+  // We assume the base ratePerKm in mockData was calculated when diesel was ₹90/L.
+  // The new rate scales proportionally with the current diesel rate.
+  const BASE_DIESEL_RATE = 90; 
+  const currentDieselRate = parseFloat(dieselRate) || BASE_DIESEL_RATE;
+  const adjustedRatePerKm = selectedVehicle.ratePerKm * (currentDieselRate / BASE_DIESEL_RATE);
+
   // For a true production app, you would pass the actual Geolocation coords here from Dashboard.jsx
   const userLat = 26.2389;
   const userLng = 73.0243; 
@@ -42,7 +49,6 @@ export const calculateProfitability = (tripData, liveData = null) => {
       const mandiCoords = stateData ? stateData[enamItem.apmc] : null;
 
       // 2. If we don't have the coordinates in our file, skip this mandi!
-      // This prevents errors and ensures the map only plots what it knows.
       if (!mandiCoords) return; 
 
       const marketPrice = parseFloat(enamItem.modal_price) || parseFloat(enamItem.min_price);
@@ -54,7 +60,10 @@ export const calculateProfitability = (tripData, liveData = null) => {
       const safeDistance = distance === 0 ? 1 : distance;
 
       const revenue = marketPrice * quantityInQuintals;
-      const transportCost = safeDistance * selectedVehicle.ratePerKm;
+      
+      // Calculate dynamic transport cost using the adjustedRatePerKm
+      const transportCost = safeDistance * adjustedRatePerKm;
+      
       const handlingCost = 500; 
       const totalCosts = transportCost + handlingCost;
       const netProfit = revenue - totalCosts;

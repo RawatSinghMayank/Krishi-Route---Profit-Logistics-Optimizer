@@ -4,8 +4,6 @@ import './InputForm.css';
 import { getUserLocation, detectStateFromCoordinates } from '../../utils/stateDetector';
 import stateBoundaries from '../../data/stateBoundaries.json';
 
-
-
 const InputForm = ({ onSubmit, loading, onReset, hasResults }) => {
   const [formData, setFormData] = useState({
     crop: '',
@@ -13,10 +11,12 @@ const InputForm = ({ onSubmit, loading, onReset, hasResults }) => {
     unit: 'quintal',
     vehicle: '',
     location: '',
+    dieselRate: '90', // Default base diesel rate in ₹
   });
-  //
+  
   const [locationStatus, setLocationStatus] = useState('');
-const handleDetectLocation = async () => {
+  
+  const handleDetectLocation = async () => {
     setLocationStatus('Locating...');
     try {
       // 1. Get GPS coordinates
@@ -27,16 +27,14 @@ const handleDetectLocation = async () => {
       
       if (detectedState) {
         setLocationStatus(`Detected: ${detectedState.name}`);
-        // Optional: You can auto-fill your form's location state here
-          handleChange('location', detectedState.enam_name); 
+        handleChange('location', detectedState.enam_name); 
       } else {
         setLocationStatus('State not recognized in database.');
       }
     } catch (error) {
-      setLocationStatus(error.message); // Shows "Permission denied" etc.
+      setLocationStatus(error.message);
     }
   };
-  //
 
   const [errors, setErrors] = useState({});
 
@@ -64,6 +62,9 @@ const handleDetectLocation = async () => {
     }
     if (!formData.vehicle) newErrors.vehicle = 'Please select a vehicle';
     if (!formData.location) newErrors.location = 'Please select your location';
+    if (!formData.dieselRate || formData.dieselRate <= 0) {
+      newErrors.dieselRate = 'Please enter a valid diesel rate';
+    }
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -84,6 +85,7 @@ const handleDetectLocation = async () => {
       unit: 'quintal',
       vehicle: '',
       location: '',
+      dieselRate: '90',
     });
     setErrors({});
     onReset();
@@ -94,13 +96,19 @@ const handleDetectLocation = async () => {
   const selectedCrop = mockData.crops.find(c => c.type === formData.crop);
   const selectedVehicle = mockData.vehicles.find(v => v.type === formData.vehicle);
   
-  
+  // Calculate adjusted vehicle rate for the summary UI
+  const baseDieselRate = 90; // Assume standard rates in mockData are based on ₹90/L
+  const currentDieselRate = parseFloat(formData.dieselRate) || baseDieselRate;
+  const adjustedRatePerKm = selectedVehicle 
+    ? (selectedVehicle.ratePerKm * (currentDieselRate / baseDieselRate)).toFixed(2) 
+    : 0;
+
   return (
     <div className="input-form-container">
       <h2 className="form-title">Trip Details</h2>
       
       <form onSubmit={handleSubmit} className="input-form">
-        {/* Crop Selection - DROPDOWN */}
+        {/* Crop Selection */}
         <div className="form-group">
           <label htmlFor="crop" className="form-label">
             Crop Type <span className="required">*</span>
@@ -135,9 +143,9 @@ const handleDetectLocation = async () => {
           {selectedCrop && (
             <div className="field-info">
               {selectedCrop.perishable ? (
-                <span className="info-badge warning"> Perishable - {selectedCrop.shelfLife} days shelf life</span>
+                <span className="info-badge warning"> Perishable - {selectedCrop.shelfLifeDays} days shelf life</span>
               ) : (
-                <span className="info-badge success">Non-perishable - {selectedCrop.shelfLife} days shelf life</span>
+                <span className="info-badge success">Non-perishable - {selectedCrop.shelfLifeDays} days shelf life</span>
               )}
             </div>
           )}
@@ -172,7 +180,7 @@ const handleDetectLocation = async () => {
           {errors.quantity && <span className="error-text">{errors.quantity}</span>}
         </div>
 
-        {/* Vehicle Selection - DROPDOWN */}
+        {/* Vehicle Selection */}
         <div className="form-group">
           <label htmlFor="vehicle" className="form-label">
             Vehicle Type <span className="required">*</span>
@@ -186,7 +194,7 @@ const handleDetectLocation = async () => {
             <option value="">-- Select Vehicle --</option>
             {mockData.vehicles.map(vehicle => (
               <option key={vehicle.id} value={vehicle.type}>
-                {vehicle.name} - {vehicle.capacity} {vehicle.capacityUnit} (₹{vehicle.ratePerKm}/km)
+                {vehicle.name} - {vehicle.capacity} {vehicle.capacityUnit} (Base: ₹{vehicle.ratePerKm}/km)
               </option>
             ))}
           </select>
@@ -197,7 +205,26 @@ const handleDetectLocation = async () => {
             </div>
           )}
         </div>
-          {/* Location Detection Button */}
+
+        {/* Today's Diesel Rate Input (NEW FEATURE) */}
+        <div className="form-group">
+          <label htmlFor="dieselRate" className="form-label">
+            Today's Diesel Rate (₹/Litre) <span className="required">*</span>
+          </label>
+          <input
+            type="number"
+            id="dieselRate"
+            className={`form-input ${errors.dieselRate ? 'error' : ''}`}
+            placeholder="e.g. 90"
+            value={formData.dieselRate}
+            onChange={(e) => handleChange('dieselRate', e.target.value)}
+            min="1"
+            step="0.1"
+          />
+          {errors.dieselRate && <span className="error-text">{errors.dieselRate}</span>}
+        </div>
+
+        {/* Location Detection Button */}
         <div className="location-detector">
           <button 
             type="button" 
@@ -208,8 +235,8 @@ const handleDetectLocation = async () => {
           </button>
           {locationStatus && <p className="location-status-text">{locationStatus}</p>}
         </div>
-        {/* Location Selection - DROPDOWN */}
-        {/* State Selection - DROPDOWN */}
+        
+        {/* State Selection */}
         <div className="form-group">
           <label htmlFor="location" className="form-label">
             Your State <span className="required">*</span>
@@ -221,7 +248,6 @@ const handleDetectLocation = async () => {
             onChange={(e) => handleChange('location', e.target.value)}
           >
             <option value="">-- Select State --</option>
-            {/* We map over our new states instead of mock locations */}
             {stateBoundaries.states.map(state => (
               <option key={state.state_id} value={state.enam_name}>
                 {state.name}
@@ -266,9 +292,9 @@ const handleDetectLocation = async () => {
         <div className="trip-summary">
           <h3 className="summary-title">Trip Summary</h3>
           <div className="summary-item">
-            <span className="summary-label">Estimated Transport:</span>
+            <span className="summary-label">Adjusted Transport Cost:</span>
             <span className="summary-value">
-              ₹{selectedVehicle.ratePerKm}/km
+              ₹{adjustedRatePerKm}/km
             </span>
           </div>
           <div className="summary-item">
