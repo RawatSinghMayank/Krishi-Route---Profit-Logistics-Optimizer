@@ -1,40 +1,59 @@
-import { useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import InputForm from '../InputForm/InputForm';
 import ProfitCards from '../ProfitCards/ProfitCards';
 import CostBreakdown from '../CostBreakdown/CostBreakdown';
 import ImpactMetrics from '../ImpactMetrics/ImpactMetrics';
 import RouteMap from '../RouteMap/RouteMap';
 import { calculateProfitability } from '../../services/profitCalculator';
-import './Dashboard.css';
 import { fetchLivePrices } from '../../services/enamApi';
+import './Dashboard.css';
 
 const Dashboard = () => {
   const [tripData, setTripData] = useState(null);
   const [profitResults, setProfitResults] = useState(null);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  
+  // Consolidated loading state
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadingStep, setLoadingStep] = useState(0);
+  
+  const loadingMessages = [
+    "Securely connecting to eNAM Government Servers...",
+    "Fetching live market prices for Rajasthan...",
+    "Calculating real-time diesel & transport costs...",
+    "Running Haversine routing algorithms...",
+    "Plotting optimal profitability..."
+  ];
+
+  // Cycles the loading text
+  useEffect(() => {
+    let interval;
+    if (isLoading) {
+      interval = setInterval(() => {
+        setLoadingStep((prev) => (prev + 1) % loadingMessages.length);
+      }, 800);
+    } else {
+      setLoadingStep(0); // Reset when done
+    }
+    return () => clearInterval(interval);
+  }, [isLoading]);
 
   const handleTripSubmit = async (formData) => {
-    setLoading(true);
+    setIsLoading(true);
     setError(null);
+    setProfitResults(null);
     
     try {
-      // 1. Check if the user auto-detected a state. 
-      // (Assuming you saved the detected state name in formData.location)
-      const userState = formData.location || "RAJASTHAN"; // Fallback for testing
+      const userState = formData.location || "RAJASTHAN"; 
       const selectedCrop = formData.crop || "-- Select Commodity --";
 
       console.log(`Fetching live data for ${selectedCrop} in ${userState}...`);
       
-      // 2. Call our new eNAM API service
       const liveData = await fetchLivePrices(userState, selectedCrop);
-      
       console.log("SUCCESS! Here is the live data from the Government:", liveData);
-
-      // (We will plug this liveData into calculateProfitability in the next step!)
       
       setTripData(formData);
-      // Temporarily keeping your old profit results so the app doesn't break
+      
       const finalResults = calculateProfitability(formData, liveData); 
       setProfitResults(finalResults);
       
@@ -42,7 +61,7 @@ const Dashboard = () => {
       setError('Failed to fetch live prices from eNAM. Please try again.');
       console.error('API Error:', err);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -68,7 +87,7 @@ const Dashboard = () => {
         <aside className="input-panel">
           <InputForm 
             onSubmit={handleTripSubmit} 
-            loading={loading}
+            loading={isLoading}
             onReset={handleReset}
             hasResults={!!profitResults}
           />
@@ -76,10 +95,13 @@ const Dashboard = () => {
 
         {/* Right Panel - Results */}
         <main className="results-panel">
-          {loading && (
-            <div className="loading-state">
-              <div className="spinner"></div>
-              <p>Analyzing markets and calculating optimal routes...</p>
+          
+          {/* THE WAITING ROOM - Dynamic Loader */}
+          {isLoading && (
+            <div className="loading-state" style={{ textAlign: 'center', padding: '60px 20px' }}>
+              <div className="spinner" style={{ margin: '0 auto 20px', width: '50px', height: '50px', border: '4px solid #e0e0e0', borderTop: '4px solid #1e8e3e', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
+              <h3 style={{ color: '#202124', fontSize: '1.3rem', marginBottom: '8px' }}>{loadingMessages[loadingStep]}</h3>
+              <p style={{ color: '#5f6368' }}>Analyzing markets and calculating optimal routes...</p>
             </div>
           )}
 
@@ -94,34 +116,37 @@ const Dashboard = () => {
             </div>
           )}
 
-          {!loading && !error && !profitResults && (
+          {!isLoading && !error && !profitResults && (
             <div className="empty-state">
               <h3>Ready to Find Your Best Market</h3>
               <p>Select your crop, quantity, vehicle, and location to compare mandi prices and maximize your profit</p>
               <div className="feature-list">
-                <div className="feature-item">
-                  <span>Real-time price comparison</span>
-                </div>
-                <div className="feature-item">
-                  <span>Transport cost calculation</span>
-                </div>
-                <div className="feature-item">
-                  <span>Profit optimization</span>
-                </div>
-                <div className="feature-item">
-                  <span>Distance-based analysis</span>
-                </div>
+                <div className="feature-item"><span>Real-time price comparison</span></div>
+                <div className="feature-item"><span>Transport cost calculation</span></div>
+                <div className="feature-item"><span>Profit optimization</span></div>
+                <div className="feature-item"><span>Distance-based analysis</span></div>
               </div>
             </div>
           )}
 
-          {!loading && !error && profitResults && (
+          {/* THE RESULTS PANEL */}
+          {!isLoading && !error && profitResults && (
             <div className="results-container">
+              
+              {/* LIVE DATA FLEX BADGE */}
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '15px' }}>
+                <div className="live-badge-container">
+                  <div className="pulsing-dot"></div>
+                  Live eNAM Data
+                </div>
+              </div>
+
               {/* Impact Metrics at Top */}
               <ImpactMetrics 
                 results={profitResults}
                 tripData={tripData}
               />
+              
               <section className="section map-section">
                 <h2 className="section-title">Route Visualization</h2>
                 <div className="map-wrapper">
@@ -153,6 +178,10 @@ const Dashboard = () => {
           )}
         </main>
       </div>
+      
+      <style>{`
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+      `}</style>
     </div>
   );
 };

@@ -180,11 +180,11 @@
 }
 
 .capacity::before {
-  content: '📦 ';
+  content: ' ';
 }
 
 .rate::before {
-  content: '💰 ';
+  content: ' ';
 }
 
 .vehicle-check {

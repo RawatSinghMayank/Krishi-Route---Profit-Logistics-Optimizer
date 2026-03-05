@@ -6,7 +6,7 @@ const ImpactMetrics = ({ results, tripData }) => {
   }
 
   const mandis = results.mandis;
-  const bestMandi = mandis[0]; // Assuming sorted by profit
+  const bestMandi = mandis[0]; 
   const worstMandi = mandis[mandis.length - 1];
   const nearestMandi = [...mandis].sort((a, b) => a.distance - b.distance)[0];
 
@@ -46,9 +46,8 @@ const ImpactMetrics = ({ results, tripData }) => {
 
   return (
     <div className="impact-metrics-container">
-      {/* Hero Banner */}
-      <div className="impact-hero" style={{ borderLeftColor: impact.color }}>
-        <div className="hero-content">
+      <div className="impact-hero" style={{ borderLeftColor: impact.color, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '20px' }}>
+        <div className="hero-content" style={{ flex: '1 1 300px' }}>
           <h2 className="hero-title">
             {potentialSavings > 0 
               ? `You could earn ${formatCurrency(potentialSavings)} more!`
@@ -65,77 +64,65 @@ const ImpactMetrics = ({ results, tripData }) => {
             {impact.text}
           </div>
         </div>
+        
+        <div style={{ textAlign: 'right', background: 'rgba(255,255,255,0.5)', padding: '15px 20px', borderRadius: '12px', minWidth: '200px' }}>
+            <p style={{ margin: '0 0 5px 0', fontSize: '0.95rem', color: '#5f6368', fontWeight: 'bold' }}>Estimated Net Profit</p>
+            <h1 style={{ margin: '0 0 10px 0', fontSize: '2.8rem', color: '#10b981', lineHeight: '1' }}>{formatCurrency(bestMandi.netProfit)}</h1>
+            <span style={{ background: '#fce8e6', color: '#d93025', padding: '6px 10px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 'bold', border: '1px solid #fad2cf' }}>
+               Live Diesel Rates Applied
+            </span>
+        </div>
       </div>
 
-      {/* Key Metrics Grid */}
       <div className="metrics-grid">
-        {/* Markets Compared */}
         <div className="metric-card primary">
           <div className="metric-content">
             <div className="metric-value">{totalMarketsCompared}</div>
             <div className="metric-label">Markets Compared</div>
-            <div className="metric-detail">
-              Avg. distance: {averageDistance} km
-            </div>
+            <div className="metric-detail">Avg. distance: {averageDistance} km</div>
           </div>
         </div>
 
-        {/* Best Profit */}
         <div className="metric-card success">
           <div className="metric-content">
             <div className="metric-value">{formatCurrency(bestMandi.netProfit)}</div>
             <div className="metric-label">Best Profit</div>
-            <div className="metric-detail">
-              {bestProfitMargin}% margin at {bestMandi.name}
-            </div>
+            <div className="metric-detail">{bestProfitMargin}% margin at {bestMandi.name}</div>
           </div>
         </div>
 
-        {/* Potential Savings */}
         {potentialSavings > 0 && (
           <div className="metric-card warning">
             <div className="metric-content">
               <div className="metric-value">{formatCurrency(potentialSavings)}</div>
               <div className="metric-label">Potential Gain</div>
-              <div className="metric-detail">
-                vs nearest market ({nearestMandi.name})
-              </div>
+              <div className="metric-detail">vs nearest market ({nearestMandi.name})</div>
             </div>
           </div>
         )}
 
-        {/* ROI per km */}
         {roi > 0 && (
           <div className="metric-card info">
             <div className="metric-content">
               <div className="metric-value">₹{roi}/km</div>
               <div className="metric-label">Return per Extra KM</div>
-              <div className="metric-detail">
-                Worth traveling {extraDistance.toFixed(0)} km extra
-              </div>
+              <div className="metric-detail">Worth traveling {extraDistance.toFixed(0)} km extra</div>
             </div>
           </div>
         )}
 
-        {/* Price Range */}
         <div className="metric-card neutral">
           <div className="metric-content">
-            <div className="metric-value">
-              {formatCurrency(maxProfitDifference)}
-            </div>
+            <div className="metric-value">{formatCurrency(maxProfitDifference)}</div>
             <div className="metric-label">Profit Spread</div>
-            <div className="metric-detail">
-              Between best and worst option
-            </div>
+            <div className="metric-detail">Between best and worst option</div>
           </div>
         </div>
       </div>
 
-      {/* Insights Panel */}
       <div className="insights-panel">
         <h3 className="insights-title">Key Insights</h3>
         <div className="insights-list">
-          {/* Nearest vs Best comparison */}
           {nearestMandi.id !== bestMandi.id && (
             <div className="insight-item highlight">
               <div className="insight-content">
@@ -150,7 +137,6 @@ const ImpactMetrics = ({ results, tripData }) => {
             </div>
           )}
 
-          {/* Distance efficiency */}
           <div className="insight-item">
             <div className="insight-content">
               <strong>Optimal distance-to-profit ratio</strong>
@@ -161,7 +147,6 @@ const ImpactMetrics = ({ results, tripData }) => {
             </div>
           </div>
 
-          {/* Cost analysis */}
           <div className="insight-item">
             <div className="insight-content">
               <strong>Transport costs managed</strong>
@@ -173,7 +158,6 @@ const ImpactMetrics = ({ results, tripData }) => {
             </div>
           </div>
 
-          {/* Market price insights */}
           {bestMandi.marketPrice > worstMandi.marketPrice && (
             <div className="insight-item">
               <div className="insight-content">
@@ -187,7 +171,6 @@ const ImpactMetrics = ({ results, tripData }) => {
             </div>
           )}
 
-          {/* Alerts if present */}
           {bestMandi.priceAlert && (
             <div className={`insight-item ${bestMandi.priceAlert.trend === 'falling' ? 'warning-item' : ''}`}>
               <span className="insight-icon">
@@ -207,7 +190,6 @@ const ImpactMetrics = ({ results, tripData }) => {
             </div>
           )}
 
-          {/* Perishability warning */}
           {bestMandi.perishabilityWarning && (
             <div className="insight-item warning-item">
               <div className="insight-content">
@@ -217,7 +199,6 @@ const ImpactMetrics = ({ results, tripData }) => {
             </div>
           )}
 
-          {/* Historical insight */}
           {bestMandi.historicalInsight && (
             <div className="insight-item">
               <div className="insight-content">
@@ -229,7 +210,6 @@ const ImpactMetrics = ({ results, tripData }) => {
         </div>
       </div>
 
-      {/* Quick Action Suggestion */}
       <div className="action-suggestion">
         <div className="suggestion-content">
           <h4>Recommended Action</h4>

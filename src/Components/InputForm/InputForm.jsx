@@ -19,20 +19,28 @@ const InputForm = ({ onSubmit, loading, onReset, hasResults }) => {
   const handleDetectLocation = async () => {
     setLocationStatus('Locating...');
     try {
-      // 1. Get GPS coordinates
       const coords = await getUserLocation();
-      
-      // 2. Find the state
       const detectedState = detectStateFromCoordinates(coords.lat, coords.lng);
       
-      if (detectedState) {
-        setLocationStatus(`Detected: ${detectedState.name}`);
-        handleChange('location', detectedState.enam_name); 
+     if (detectedState) {
+        // Save the exact Lat/Lng so the map knows where to start
+        handleChange('originCoords', { lat: coords.lat, lng: coords.lng });
+        // -------------------------
+
+        if (detectedState.enam_name === 'RAJASTHAN') {
+          setLocationStatus(`Detected: ${detectedState.name}`);
+          handleChange('location', detectedState.enam_name); 
+        } else {
+          setLocationStatus(`Detected: ${detectedState.name}. (Note: MVP is currently limited to Rajasthan markets).`);
+          handleChange('location', 'RAJASTHAN');
+        }
       } else {
-        setLocationStatus('State not recognized in database.');
+        setLocationStatus('Location not recognized. Defaulting to Rajasthan MVP.');
+        handleChange('location', 'RAJASTHAN');
       }
     } catch (error) {
-      setLocationStatus(error.message);
+      setLocationStatus(`${error.message} Defaulting to Rajasthan.`);
+      handleChange('location', 'RAJASTHAN');
     }
   };
 
@@ -97,7 +105,7 @@ const InputForm = ({ onSubmit, loading, onReset, hasResults }) => {
   const selectedVehicle = mockData.vehicles.find(v => v.type === formData.vehicle);
   
   // Calculate adjusted vehicle rate for the summary UI
-  const baseDieselRate = 90; // Assume standard rates in mockData are based on ₹90/L
+  const baseDieselRate = 90; 
   const currentDieselRate = parseFloat(formData.dieselRate) || baseDieselRate;
   const adjustedRatePerKm = selectedVehicle 
     ? (selectedVehicle.ratePerKm * (currentDieselRate / baseDieselRate)).toFixed(2) 
@@ -122,7 +130,7 @@ const InputForm = ({ onSubmit, loading, onReset, hasResults }) => {
         >
           <option value="">-- Select Commodity --</option>
           
-          <optgroup label="🌾 Grains, Seeds & Cash Crops">
+          <optgroup label=" Grains, Seeds & Cash Crops">
             {grains.map((crop) => (
               <option key={crop.id} value={crop.type}>
                 {crop.name}
@@ -130,7 +138,7 @@ const InputForm = ({ onSubmit, loading, onReset, hasResults }) => {
             ))}
           </optgroup>
           
-          <optgroup label="🍅 Fruits & Vegetables">
+          <optgroup label=" Fruits & Vegetables">
             {vegetables.map((crop) => (
               <option key={crop.id} value={crop.type}>
                 {crop.name}
@@ -145,7 +153,7 @@ const InputForm = ({ onSubmit, loading, onReset, hasResults }) => {
               {selectedCrop.perishable ? (
                 <span className="info-badge warning"> Perishable - {selectedCrop.shelfLifeDays} days shelf life</span>
               ) : (
-                <span className="info-badge success">Non-perishable - {selectedCrop.shelfLifeDays} days shelf life</span>
+                <span className="info-badge success"> Perishable - {selectedCrop.shelfLifeDays} days shelf life</span>
               )}
             </div>
           )}
@@ -206,7 +214,7 @@ const InputForm = ({ onSubmit, loading, onReset, hasResults }) => {
           )}
         </div>
 
-        {/* Today's Diesel Rate Input (NEW FEATURE) */}
+        {/* Today's Diesel Rate Input */}
         <div className="form-group">
           <label htmlFor="dieselRate" className="form-label">
             Today's Diesel Rate (₹/Litre) <span className="required">*</span>

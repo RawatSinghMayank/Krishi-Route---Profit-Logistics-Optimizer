@@ -1,8 +1,7 @@
 import stateBoundaries from '../data/stateBoundaries.json';
 
 /**
- * 1. Asks the browser for the user's current GPS location.
- * Returns a Promise so we can use async/await in our React components.
+ * Asks the browser for the user's current GPS location.
  */
 export const getUserLocation = () => {
   return new Promise((resolve, reject) => {
@@ -41,7 +40,7 @@ export const getUserLocation = () => {
 };
 
 /**
- * 2. Takes Lat/Lng and finds which state bounding box it falls into.
+ * Takes Lat/Lng and finds which state bounding box it falls into.
  */
 export const detectStateFromCoordinates = (lat, lng) => {
   for (const state of stateBoundaries.states) {
@@ -49,7 +48,7 @@ export const detectStateFromCoordinates = (lat, lng) => {
     
     // Check if the coordinates fall inside this state's box
     if (lat <= north && lat >= south && lng <= east && lng >= west) {
-      return state; // Match found!
+      return state; 
     }
   }
   
